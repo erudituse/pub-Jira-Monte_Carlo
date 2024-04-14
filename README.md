@@ -14,8 +14,8 @@ Update the configuration file. "configs.json"<br />
 <ul>
 <li>The scripts assumes Atlassian Cloud offering. Update path to the config file in jiraissues.py</li>
 <ul>
-<li>base_url</li>
-<li>project_api_endpoint </li>
+<li>base_url: update the domain section of the URL for your Jira installation</li>
+<li>project_api_endpoint: update this to the API end point. usually you'll only need to update values before the "?"</li>
 <li>project: Name of your Jira Project (usually the project Key)</li>
 <li>jql_query</li>
 <li>It's a good idea to contatenate the values of base_url+project_api_endpoint+project+jql+query using a browser or Postman to test and correct issues with the https call</li></ul>
