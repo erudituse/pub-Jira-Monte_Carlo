@@ -17,7 +17,7 @@ Update the configuration file<br />
 -- credFile: name of the json file that has the creds<br />
 -- csvFolderPath: enter path where you want to csv files to be written<br />
 -- imagesPath: enter path where you want the statistics graphs stored<br />
--- release: If you use Fix/Version field in Jira to track releases, update this field as a string otherwise leave it blank
+-- release: If you use Fix/Version field in Jira to track releases, update this field as a string otherwise leave it blank <br />
 -- epic_to_exclude: If you want to exclude any Epics from the analysis update the Epic Names as a list othrewise leave blank if you want to include all Epics<br />
 -- base_url: This is the base URL of accessing the Atlassian install <br />
 -- api_end_point: this is the API end point specific to your install <br />
