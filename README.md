@@ -6,3 +6,6 @@ Update your Jira credentials
 Edit the "secrets.json" file in the creds folder 
 Enter user name
 Enter password (or the API token from Atlassian)
+
+Step 2:
+Update the configuration file
