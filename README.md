@@ -23,7 +23,7 @@ Update the configuration file<br />
 -- api_end_point: this is the API end point specific to your install <br />
 -- jql_query: update the fields you need to export out <br /> <br />
 Note: concatenate the base_url, api_end_point and jql_query to test the link in a Browser or Postman. When testing, you will need to inject the Project KEY between the api_end_point and jql query<br />
-Note: custom fields might need to be added/edited for your install. The custom field "customfield_10007" in the config code is to get the "Epic link" or "parent" for each ticket
+Note: custom fields might need to be added/edited for your install. The custom field "customfield_10007" in the config code is to get the "Epic link" or "parent" for each ticket<br /><br />
 -- excluded_issue_types: Update this list if you want to exclude any ticket types from the analysis. The default is "Epic", "Study (Spike)", "Test", "Sub-tasks"<br />
 -- not_started_contributing_states: there's likely going to be queues in your workflow that don't contribute to Cycle Time calculations. Default is "Backlog" and "To Do". Update this list to suite your unique workflow<br />
 -- excluded_from_status: Jira change logs include two statuses for each field changed: From and To. Tickets in the Backlog, To-Do and Done queues don't contribute to cycle time. Update this for your own unique workflow. For example, in your workflow, tickets in UAT might not count towards Cycle Time. <br />
