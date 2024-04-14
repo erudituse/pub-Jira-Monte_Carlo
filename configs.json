@@ -1,0 +1,66 @@
+{
+    "configData": [
+        {
+            "project": "",
+            "folderPath": "",
+            "csvFileName": "jira.csv",
+            "csv_list_of_tickets": "jira_ticket_list.csv",
+            "folderForCreds": "/creds/",
+            "credsFile": "secrets.json",
+            "exportJiraScript": "jiraissues.py",
+            "exportJiraListFile": "jira_tickets_list.py",
+            "csvFolderPath": "/csv/",
+            "imagesPath": "/images/",
+            "release": "",
+            "epic_to_exclude": [
+                
+            ],
+            "excluded_issue_types": [
+                "Epic",
+                "Study",
+                "Test Case",
+                "Sub-task"
+            ],
+            "not_started_contributing_states": [
+                "Backlog",
+                "To Do"
+            ],
+            "wip_categories_included": [
+                "Done",
+                "WIP"
+            ],
+            "excluded_from_status": [
+                "Backlog",
+                "Done",
+                "To Do"
+            ],
+            "fields_without_changelogs": [
+                [
+                    "Jira Key",
+                    "Summary",
+                    "IssueType",
+                    "Current Status",
+                    "Ticket Created On",
+                    "Release",
+                    "Components",
+                    "Labels",
+                    "Sprint",
+                    "Date Completed",
+                    "Epic Link",
+                    "WIP Category",
+                    "Done Year",
+                    "Done Week",
+                    "Done Year Week",
+                    "Created Year",
+                    "Created Week",
+                    "Created Year Week"
+                ]
+            ],
+            "useCurrentDate": "Y",
+            "remainingTicketCount": 66,
+            "finalTicketCount": 7,
+            "rollingAvgWeeks": 8,
+            "confidenceLevels": 85
+        }
+    ]
+}
