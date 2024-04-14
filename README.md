@@ -18,7 +18,11 @@ Update the configuration file. "configs.json"<br />
 <li>project_api_endpoint: update this to the API end point. usually you'll only need to update values before the "?"</li>
 <li>project: Name of your Jira Project (usually the project Key)</li>
 <li>jql_query</li>
-<li>It's a good idea to contatenate the values of base_url+project_api_endpoint+project+jql+query using a browser or Postman to test and correct issues with the https call</li></ul>
+<li>Note: concatenate the base_url+api_end_point+project key+jql_query to test the link in a Browser or Postman.<br />
+Note: Within the jql_query, custom fields might need to be added/edited for your install. The custom field "customfield_10007" in the config code is to get the "Epic link" or "parent" for each ticket. Replace this with your own field name for "Epic Link"<br />
+If you choose to add additional fields, then this is a change to the <strong>underlying code</strong> and csv file heading configurations. 
+</li>
+</ul>
 <li>folderPath: this is the location where you intend to store your python files</li>
 <li>csvFileName: choose a file name you want for your jira ticket CHANGE LOGS</li>
 <li>csv_list_of_tickets: choose a file name for your jira tickets WITHOUT change logs</li>
@@ -26,13 +30,8 @@ Update the configuration file. "configs.json"<br />
 <li>credFile: name of the json file that has the creds</li>
 <li>csvFolderPath: enter path where you want to csv files to be written</li>
 <li>imagesPath: enter path where you want the statistics graphs stored</li>
-<li>release: If you use Fix/Version field in Jira to track releases, update this field as a string otherwise leave it blank</li>
-<li>epic_to_exclude: If you want to exclude any Epics from the analysis update the Epic Names as a list othrewise leave blank if you want to include all Epics</li>
-<li>base_url: This is the base URL of accessing the Atlassian install </li>
-<li>api_end_point: this is the API end point specific to your install </li>
-<li>jql_query: update the fields you need to export out <br /> <br />
-Note: concatenate the base_url, api_end_point and jql_query to test the link in a Browser or Postman. When testing, you will need to inject the Project KEY between the api_end_point and jql query<br />
-Note: custom fields might need to be added/edited for your install. The custom field "customfield_10007" in the config code is to get the "Epic link" or "parent" for each ticket</li>
+<li>release: If you use Fix/Version field in Jira to track releases, update this field as a string otherwise leave it blank. The analysis is created to work for the entire jira project or just ONE release. You will get an error if you attempt to add multiple release values</li>
+<li>epic_to_exclude: Leave this value blank if you want to include all Epics in the project, else enter the Epic Name as strings within this list</li>
 <li>excluded_issue_types: Update this list if you want to exclude any ticket types from the analysis. The default is "Epic", "Study (Spike)", "Test", "Sub-tasks"</li>
 <li>not_started_contributing_states: there's likely going to be queues in your workflow that don't contribute to Cycle Time calculations. Default is "Backlog" and "To Do". Update this list to suite your unique workflow</li>
 <li>excluded_from_status: Jira change logs include two statuses for each field changed: From and To. Tickets in the Backlog, To-Do and Done queues don't contribute to cycle time. Update this for your own unique workflow. For example, in your workflow, tickets in UAT might not count towards Cycle Time. </li>
