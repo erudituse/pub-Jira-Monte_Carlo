@@ -282,10 +282,10 @@ fileName_for_secrets = readConfigs['configData'][0]['credsFile']
 
 ### create the URL of the REST API endpoint you want to access
 ### don't delete or modify the following two lines (unless Atlassian publishes a new end point/version)
-base_url = "https://ontariodigital.atlassian.net"  
-project_api_endpoint = "/rest/api/3/search?jql=project+%3D+"
+base_url = readConfigs['configData'][0]['base_url']
+project_api_endpoint = readConfigs['configData'][0]['api_end_point']
 ### if you add additional fields remember to update the myData.append lines across all functions to ensure the fields gets exported
-jql = "&fields=key,summary, created, issuetype, status, parent, labels, fixVersions,components,customfield_10007,resolutiondate&sorter/order=ASC&type=story&maxResults=1000&expand=changelog&startAt="
+jql = readConfigs['configData'][0]['jql_query']
 
 recordPullStartAt = 0
 passNumber = 0

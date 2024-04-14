@@ -21,24 +21,27 @@ Update the configuration file<br />
 -- epic_to_exclude: If you want to exclude any Epics from the analysis update the Epic Names as a list othrewise leave blank if you want to include all Epics<br />
 -- base_url: This is the base URL of accessing the Atlassian install <br />
 -- api_end_point: this is the API end point specific to your install <br />
--- jql_query: update the fields you need to export out <br />
-Note: concatenate the base_url, api_end_point and jql_query to test the link in a Browser or Postman
+-- jql_query: update the fields you need to export out <br /> <br />
+Note: concatenate the base_url, api_end_point and jql_query to test the link in a Browser or Postman. When testing, you will need to inject the Project KEY between the api_end_point and jql query<br />
+Note: custom fields might need to be added/edited for your install. The custom field "customfield_10007" in the config code is to get the "Epic link" or "parent" for each ticket
 -- excluded_issue_types: Update this list if you want to exclude any ticket types from the analysis. The default is "Epic", "Study (Spike)", "Test", "Sub-tasks"<br />
 -- not_started_contributing_states: there's likely going to be queues in your workflow that don't contribute to Cycle Time calculations. Default is "Backlog" and "To Do". Update this list to suite your unique workflow<br />
--- wip_categories_included: Don't update this as cycle times are calculated for both Done and WIP (aging) tickets<br />
 -- excluded_from_status: Jira change logs include two statuses for each field changed: From and To. Tickets in the Backlog, To-Do and Done queues don't contribute to cycle time. Update this for your own unique workflow. For example, in your workflow, tickets in UAT might not count towards Cycle Time. <br />
--- fields_without_changelogs: DON't UPDATE THIS. This is used as label headings in your exported CSV<br />
 -- remainingTicketCount: While you can edit this, it is updated dynamically once you pull data fro Jira<br />
 -- finalTicketCount: this is also updated dynamically. 10% of your remaining tickets is added as additional buffer to account for unknown unknowns <br />
 -- rollingAvgWeeks: By default, 8 week rolling average is used to calculate your weekly throughput. Increase or decrease this number to suite your unique situation<br />
 -- confidenceLevels: By default the Monte Carlo analysis will compute the probability of achieving a certain date at 85% confidence levels. This works for most situations. Change this percentage if you need lower or higher confidence levels on your completion dates<br />
 <br />
+-- DO NOT UPDATE THE FOLLOWING LISTS
+--- change_logs_csv_header
+--- fields_without_changelogs
+--- wip_categories_included
 Step 3:<br />
 Update path to the config file in jiraissues.py<br />
 -- configPath: path to the "configs.json" file <br />
-The scripts assumes Atlassian Cloud offering. <br/> 
+The scripts assumes Atlassian Cloud offering. <br/>
 However if you have any other type of  install, you will need to update <br />
 -- base_url, AND , <br />
 -- project_api_endpoint <br />
 <br />
-It's always a good idea to use your installation's API end point 
+It's always a good idea to use your installation's API end point
