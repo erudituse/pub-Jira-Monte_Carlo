@@ -1,11 +1,13 @@
 # pub-Jira-Monte_Carlo
 This is a public repo to export jira tickets using Atlassian API and run monte carlo simulation to predict delivery dates <br /><br />
 
-Step 1:<br />
+<h2>Step 1:</h2><br />
 Update your Jira credentials<br />
--- Edit the "secrets.json" file in the creds folder <br />
--- Enter user name<br />
---Enter password (or the API token from Atlassian)<br />
+<ul>
+<li>> Edit the "secrets.json" file in the creds folder</li>
+<li>>Enter user name</li>
+<li>Enter password (or the API token from Atlassian)</li>
+</ul>
 <br /><br />
 <h2>Step 2:</h2><br />
 Update the configuration file. "configs.json"<br />
