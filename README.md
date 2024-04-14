@@ -47,5 +47,3 @@ If you choose to add additional fields, then this is a change to the <strong>und
 --- wip_categories_included<br/><br />
 
 
-<br />
-It's always a good idea to use your installation's API end point

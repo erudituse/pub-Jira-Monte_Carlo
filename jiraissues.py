@@ -1,10 +1,7 @@
-######### Author: Charan Atreya, 
-### Initial Creation Date: Apr 2017
+######### Author: Charan Atreya
 ####### 
-# Purpose: The goal of this file is to:
-# 1. Export tickets Change Logs, and
-# 2. Export tickets WITHOUT change logs
-# Change logs are not accessible using out of the box Jira reports
+# Purpose: The goal of this script is export as a csv file, the time spent by Jira tickets in each stage
+# This data is not readily available using standard Jira export functions or via reports
 #######
 
 ########################################################################################################
@@ -12,9 +9,7 @@
 #########################################################################################################
 
 ### provide path for configs file
-configPath = '/Users/charan/Documents/GitHub/delivery_forecasting/ignore/configs.json'
-#########################################################################################################
-
+configPath = 'configs.json'
 
 import json
 import requests
@@ -94,7 +89,7 @@ def calculateWIP(dateOfChange):
 ########################################################################################################
 #####  function to determine status transition of each ticket and record them in a csv file ############
 ########################################################################################################
-def exportCSV( data, destination, writeMode ):
+def exportCSV( data, destination, writeMode,csv_file_header ):
     
     destinationFile = destination
     appendMode = writeMode
@@ -103,7 +98,8 @@ def exportCSV( data, destination, writeMode ):
     totalRecords = len(data["issues"]) ## total actual Jira tickets exported in the API
     ## append headers to csv file
     if (appendMode == 'w'):
-        myData = [["Jira Key","Summary","IssueType","Current Status","Ticket Created On", "From status", "To status", "Date changed","Time in From Status (days)","Release","Components","Labels","Sprint","Date Completed","Epic Link","Age in the last WIP Status","Jira Change ID", "WIP Category","Done Year", "Done Week", "Year Week"]]
+        myData = [csv_file_header]
+        # myData = [["Jira Key","Summary","IssueType","Current Status","Ticket Created On", "From status", "To status", "Date changed","Time in From Status (days)","Release","Components","Labels","Sprint","Date Completed","Epic Link","Age in the last WIP Status","Jira Change ID", "WIP Category","Done Year", "Done Week", "Year Week"]]
     
     for x in range(0,totalRecords,1):
         ## Initialize variables
@@ -179,7 +175,8 @@ def exportCSV( data, destination, writeMode ):
             ## print ("issue key when history length = 0", issueKey, " and x is ",x)    
             myData.append([issueKey,issueSummary, issueType, currentStatus, dateCreated,fromStatus,None,None,None,releaseList,componentsList,labels,currentSprint,None,epicLink,WIPageinCurrentStatus,changeID, wipCategory, done_year, done_week,year_week])
         
-        ## iterate through history of every Jira story - variable "z"; if changes in ascending order, increment the loop, else decrement the loop
+        ## iterate through history of every Jira story - variable "z"; 
+        ## if changes in ascending order, increment the loop, else decrement the loop
         for z in range(historyLength-1,-1,-1):                                  
             ## initialize variables for every change record in the history
             WIPageinCurrentStatus = 0
@@ -274,6 +271,7 @@ destination = destPath+destFileName
 
 path_for_secrets = readConfigs['configData'][0]['folderForCreds']
 fileName_for_secrets = readConfigs['configData'][0]['credsFile']
+csv_file_headers = readConfigs['configData'][0]['change_logs_csv_header']
 
 
 #########################################################################
@@ -286,7 +284,6 @@ base_url = readConfigs['configData'][0]['base_url']
 project_api_endpoint = readConfigs['configData'][0]['api_end_point']
 ### if you add additional fields remember to update the myData.append lines across all functions to ensure the fields gets exported
 jql = readConfigs['configData'][0]['jql_query']
-
 recordPullStartAt = 0
 passNumber = 0
 ticketsLoop = True                  ## set defatult value - used to loop through the API if total tickets > 1000
@@ -340,7 +337,7 @@ while ticketsLoop:
     
     
     ## call the export to CSV function form the json
-    exportCSV(data,destination,writeMode)
+    exportCSV(data,destination,writeMode, csv_file_headers)
 
     ### check if all tickets have been exported. 
     if passNumber < numberOfPasses - 1:
