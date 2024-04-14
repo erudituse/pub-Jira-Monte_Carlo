@@ -7,8 +7,11 @@ Update your Jira credentials<br />
 -- Enter user name<br />
 --Enter password (or the API token from Atlassian)<br />
 <br /><br />
-Step 2:<br />
-Update the configuration file<br />
+<h2>Step 2:</h2><br />
+Update the configuration file. "configs.json"<br />
+-- The scripts assumes Atlassian Cloud offering. Update path to the config file in jiraissues.py<br />
+-- base_url, AND , <br />
+-- project_api_endpoint <br />
 -- project: Name of your Jira Project (usually the project Key)<br />
 -- folderPath: this is the location where you intend to store your python files<br />
 -- csvFileName: choose a file name you want for your jira ticket CHANGE LOGS<br />
@@ -32,16 +35,11 @@ Note: custom fields might need to be added/edited for your install. The custom f
 -- rollingAvgWeeks: By default, 8 week rolling average is used to calculate your weekly throughput. Increase or decrease this number to suite your unique situation<br />
 -- confidenceLevels: By default the Monte Carlo analysis will compute the probability of achieving a certain date at 85% confidence levels. This works for most situations. Change this percentage if you need lower or higher confidence levels on your completion dates<br />
 <br />
--- DO NOT UPDATE THE FOLLOWING LISTS
---- change_logs_csv_header
---- fields_without_changelogs
---- wip_categories_included
-Step 3:<br />
-Update path to the config file in jiraissues.py<br />
--- configPath: path to the "configs.json" file <br />
-The scripts assumes Atlassian Cloud offering. <br/>
-However if you have any other type of  install, you will need to update <br />
--- base_url, AND , <br />
--- project_api_endpoint <br />
+-- DO NOT UPDATE THE FOLLOWING LISTS <br />
+--- change_logs_csv_header </br />
+--- fields_without_changelogs<br />
+--- wip_categories_included<br/><br />
+
+
 <br />
 It's always a good idea to use your installation's API end point
