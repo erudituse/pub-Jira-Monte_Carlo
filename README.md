@@ -60,11 +60,11 @@ Adding additional fields to export, will need a change to the underlying code of
 <h2>OUTPUT</h2><br />
 <ul>
 <li>There are two key csv files that will be created when the jira export script is run. These two files store the exported data from Jira needed to run the statistical analysis</li>
-<ol>
-<li>jira.csv - this file contains the change logs</li>
-<li>jira_tickets_list.csv - this file contains all jira tickets WITHOUT change logs</li>
+<ul>
+<li>jira.csv (as defined in the config file)- this file contains the change logs</li>
+<li>jira_tickets_list.csv (as defined in the config file)- this file contains all jira tickets WITHOUT change logs</li>
 </ul>
-<li>Within the csv folder, you'll also see a number of files starting with "debug". They are not only helpful in validating the various data segments needed for statistical analysis, but also useful in troubleshooting issues</li>
+<li>Within the csv folder, you'll also see a number of files starting with "debug_". <ul><li>They are not only helpful in validating the various data pieces needed for statistical analysis, but also useful in troubleshooting issues</li></ul>
 <li>Four images will be created within the Images folder</li>
 <ul>
 <li>history_distribution.png: This graph will show the histogram of completed and aging tickets. You can also see the Mean (Average), Median, Standard Deviation stats of your data</li>
