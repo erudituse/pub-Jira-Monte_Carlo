@@ -37,9 +37,9 @@ Update the configuration file. "configs.json"<br />
 <li>jql_query: this is the JQL query to export jira tickets WITHOUT change logs</li>
 <li>jql_changelog_query: this is the JQL query to export jira tickets WITH change logs</li>
 <li>project: Name of your Jira Project (usually the project Key)</li>
-<li>Note: concatenate the base_url+api_end_point+project key+jql_query to test the link in a Browser or Postman.<br />
-Note: Within the jql_query, custom fields might need to be added/edited for your install. The custom field "customfield_10007" in the config code is to get the "Epic link" or "parent" for each ticket. Replace this with your own field name for "Epic Link"<br />
-Adding additional fields to export, will need a change to the underlying code of export_tickets.py script.  
+<li>Note: concatenate the base_url+api_end_point+project key+jql_query to test the link in a Browser or Postman.<p>
+Note: Within the jql_query, custom fields might need to be added/edited for your install. Adding additional fields or editing existing fields to export, will need a change to the underlying code of export_tickets.py script. Feel free to edit the code as needed to your requirements.
+</p>
 </li>
 </ul>
 <li>folderPath: this is the location where you intend to store your python files</li>
