@@ -13,7 +13,7 @@ Update your Jira credentials<br />
 <h2>Step 2:</h2><br />
 Update the configuration file. "configs.json"<br />
 <ul>
-<li>The scripts assumes Atlassian Cloud offering. Update path to the config file in jiraissues.py</li>
+<li>The scripts assumes Atlassian Cloud offering. </li>
 <ul>
 <li>base_url: update the domain section of the URL for your Jira installation</li>
 <li>api_end_point: update this to the API end point. Usually you'll only need to update values before the "?"</li>
