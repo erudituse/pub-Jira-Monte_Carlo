@@ -16,19 +16,20 @@ Update the configuration file. "configs.json"<br />
 <li>The scripts assumes Atlassian Cloud offering. Update path to the config file in jiraissues.py</li>
 <ul>
 <li>base_url: update the domain section of the URL for your Jira installation</li>
-<li>project_api_endpoint: update this to the API end point. usually you'll only need to update values before the "?"</li>
+<li>api_end_point: update this to the API end point. Usually you'll only need to update values before the "?"</li>
+<li>jql_query: this is the JQL query to export jira tickets WITHOUT change logs</li>
+<li>jql_changelog_query: this is the JQL query to export jira tickets WITH change logs</li>
 <li>project: Name of your Jira Project (usually the project Key)</li>
-<li>jql_query</li>
 <li>Note: concatenate the base_url+api_end_point+project key+jql_query to test the link in a Browser or Postman.<br />
 Note: Within the jql_query, custom fields might need to be added/edited for your install. The custom field "customfield_10007" in the config code is to get the "Epic link" or "parent" for each ticket. Replace this with your own field name for "Epic Link"<br />
-If you choose to add additional fields, then this is a change to the <strong>underlying code</strong> and csv file heading configurations. 
+Adding additional fields to export, will need a change to the underlying code of export_tickets.py script.  
 </li>
 </ul>
 <li>folderPath: this is the location where you intend to store your python files</li>
 <li>csvFileName: choose a file name you want for your jira ticket CHANGE LOGS</li>
 <li>csv_list_of_tickets: choose a file name for your jira tickets WITHOUT change logs</li>
 <li>folderForCreds: update the path where you stored the Jira access credentials</li>
-<li>credFile: name of the json file that has the creds</li>
+<li>credFile: name of the json file that has the creds. NOTE: Protect your credentials and prevent them from syncing with Github</li>
 <li>csvFolderPath: enter path where you want to csv files to be written</li>
 <li>imagesPath: enter path where you want the statistics graphs stored</li>
 <li>release: If you use Fix/Version field in Jira to track releases, update this field as a string otherwise leave it blank. The analysis is created to work for the entire jira project or just ONE release. You will get an error if you attempt to add multiple release values</li>

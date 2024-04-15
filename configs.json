@@ -39,6 +39,12 @@
                 "Done",
                 "To Do"
             ],
+            "remainingTicketCount": 125,
+            "finalTicketCount": 13,
+            "rollingAvgWeeks": 8,
+            "confidenceLevels": 85,
+            "change_logs_csv_header": [
+            ],
             "fields_without_changelogs": [
                 [
                     "Jira Key",
@@ -61,11 +67,7 @@
                     "Created Year Week"
                 ]
             ],
-            "useCurrentDate": "Y",
-            "remainingTicketCount": 125,
-            "finalTicketCount": 13,
-            "rollingAvgWeeks": 8,
-            "confidenceLevels": 85
+            "useCurrentDate": "Y"
         }
     ]
 }
