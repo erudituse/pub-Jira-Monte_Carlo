@@ -69,6 +69,7 @@ Note: Within the jql_query, custom fields might need to be added/edited for your
 <h2>Step 3:</h2><br />
 <ul>
 <li>Ensure "monte_carlo.py", "export_tickets.py",  and "jira_tickets_list.py" are in the same folder as the config file "configs.json"</li>
+<li>Create two sub-folders: "csv" and "images"</li>
 </ul>
 
 <h2>Step 4:</h2><br />
