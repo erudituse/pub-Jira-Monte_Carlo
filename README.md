@@ -97,7 +97,7 @@ The following emperical data for the [Release] is used to forecast release dates
 <ul>
 <li>with a median cycle time of 10.0 working days per ticket and standard deviation of 25.43 working days</li>
 <li>between min 1.0 day/s and max 100 day/s</li>
-<li>>with a rolling 8 week average completion rate of 10 tickets/week </li>
+<li>with a rolling 8 week average completion rate of 10 tickets/week </li>
 </ul>
 Forecast: There's a 85% chance that the remaining YY (+10% additional tickets to account for unknown unknowns) Stories, Bugs, Tasks and DevOps Support tickets is expected to be delivered between 18 July, 2024 and 25 July, 2024.
 </p>
