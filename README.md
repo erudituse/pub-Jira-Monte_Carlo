@@ -4,6 +4,7 @@ This is a public repo to export jira tickets using Atlassian API and run monte c
 <h2>Step 1:</h2><br />
 Update your Jira credentials<br />
 <ul>
+<li>CAUTION: Ensure the creds folder and user credentials file doesn't get uploaded to Github. Update the .gitignore file</li>
 <li>Edit the "secrets.json" file in the creds folder</li>
 <li>Enter user name</li>
 <li>Enter password (or the API token from Atlassian)</li>
@@ -45,5 +46,33 @@ If you choose to add additional fields, then this is a change to the <strong>und
 --- change_logs_csv_header </br />
 --- fields_without_changelogs<br />
 --- wip_categories_included<br/><br />
+
+
+<h2>Step 3:</h2><br />
+<ul>
+<li>Ensure "monte_carlo.py", "export_tickets.py",  and "jira_tickets_list.py" are in the same folder as the config file "configs.json"</li>
+</ul>
+
+<h2>Step 4:</h2><br />
+<strong>Run the monte_carlo.py script</strong>
+
+<h2>OUTPUT</h2><br />
+<ul>
+<li>There are two key csv files that will be created when the jira export script is run. These two files store the exported data from Jira needed to run the statistical analysis</li>
+<ol>
+<li>jira.csv - this file contains the change logs</li>
+<li>jira_tickets_list.csv - this file contains all jira tickets WITHOUT change logs</li>
+</ul>
+<li>Within the csv folder, you'll also see a number of files starting with "debug". They are not only helpful in validating the various data segments needed for statistical analysis, but also useful in troubleshooting issues</li>
+<li>Four images will be created within the Images folder</li>
+<ul>
+<li>history_distribution.png: This graph will show the histogram of completed and aging tickets. You can also see the Mean (Average), Median, Standard Deviation stats of your data</li>
+<li>weeklyThroughput.png: This line graph shows how the weekly throughput i.e. tickets completed per week</li>
+<li>weeksToComplete.png: This is the result of the Monte Carlo analysis. The analysis runs 10,000 simulations, and plots the median completion of each of the remaining incomplete tickets. The verbose results calculated prediction dates, by default, at the 85th percentile (update config file to change the percentile that suits your needs)</li>
+<li>weekly_created_tickets: This is a column graph that helps visualize tickets created weekly vs completed. While Jira has an out of the box report for this, you have greater control on the types of tickets to include/exclude</li>
+</ul>
+</ul>
+
+
 
 

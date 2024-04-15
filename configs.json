@@ -1,24 +1,24 @@
 {
     "configData": [
         {
-            "base_url":"https://yourinstance.atlassian.net",
+            "base_url": "https://YOURINSTANCE.atlassian.net",
             "api_end_point": "/rest/api/3/search?jql=project+%3D+",
-            "jql_query": "&fields=key,summary, created, issuetype, status, parent, labels, fixVersions,components,customfield_10007,resolutiondate&sorter/order=ASC&type=story&maxResults=1000&expand=changelog&startAt=",
-            "project": "",
-            "folderPath": "",
+            "jql_changelog_query": "&fields=key,summary, created, issuetype, status, parent, labels, fixVersions,components,customfield_10007,resolutiondate&sorter/order=ASC&type=story&maxResults=1000&expand=changelog&startAt=",
+            "jql_query": "&fields=key,summary, created, issuetype, status, parent, labels,fixVersions,components,customfield_10007,resolutiondate,assignee&sorter/order=ASC&maxResults=1000&startAt=",
+            "project": "UPDATE THIS TO YOUR PROJECT KEY",
+            "folderPath": "/",
             "csvFileName": "jira.csv",
             "csv_list_of_tickets": "jira_ticket_list.csv",
-            "folderForCreds": "/creds/",
+            "folderForCreds": "creds/",
             "credsFile": "secrets.json",
-            "exportJiraScript": "jiraissues.py",
             "exportJiraListFile": "jira_tickets_list.py",
-            "csvFolderPath": "/csv/",
-            "imagesPath": "/images/",
-            "release": "",
+            "csvFolderPath": "csv/",
+            "imagesPath": "images/",
+            "release": "UPDATE THIS TO A JIRA FIX/VERSION OR LEAVE BLANK",
             "epic_to_exclude": [
                 "Epic 1",
                 "Epic 2",
-                "etc"
+                "etc OR LEAVE BLANK"
             ],
             "excluded_issue_types": [
                 "Epic",
@@ -62,8 +62,8 @@
                 ]
             ],
             "useCurrentDate": "Y",
-            "remainingTicketCount": 66,
-            "finalTicketCount": 7,
+            "remainingTicketCount": 125,
+            "finalTicketCount": 13,
             "rollingAvgWeeks": 8,
             "confidenceLevels": 85
         }
