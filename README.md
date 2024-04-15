@@ -92,13 +92,13 @@ The following emperical data for the [Release] is used to forecast release dates
 <li>['Done', 'WIP'] are included</li>
 <li>Time spent in ['Backlog', 'Done', 'To Do'] queues are NOT included</li>
 <li>['Epic', 'Study', 'Test Case', 'Sub-task'] ticket types are NOT included</li>
-<li>127 tickets have been completed so far in the release </li>
+<li>XXX tickets have been completed so far in the release </li>
 <ul>
-<li>>with a median cycle time of 10.0 working days per ticket and standard deviation of 41.34 working days</li>
-<li>between min 1.0 day/s and max 220.0 day/s</li>
-<li>>with a rolling 8 week average completion rate of 9.12 tickets/week </li>
+<li>with a median cycle time of 10.0 working days per ticket and standard deviation of 25.43 working days</li>
+<li>between min 1.0 day/s and max 100 day/s</li>
+<li>>with a rolling 8 week average completion rate of 10 tickets/week </li>
 </ul>
-Forecast: There's a 85% chance that the remaining 66 (+10% additional tickets to account for unknown unknowns) Stories, Bugs, Tasks and DevOps Support tickets is expected to be delivered between 18 May, 2024 and 25 May, 2024.
+Forecast: There's a 85% chance that the remaining YY (+10% additional tickets to account for unknown unknowns) Stories, Bugs, Tasks and DevOps Support tickets is expected to be delivered between 18 July, 2024 and 25 July, 2024.
 </p>
 <li>There are two key csv files that will be created when the jira export script is run. These two files store the exported data from Jira needed to run the statistical analysis</li>
 <ul>
