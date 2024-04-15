@@ -82,6 +82,7 @@ Note: Within the jql_query, custom fields might need to be added/edited for your
 
 <h2>Step 4:</h2><br />
 <strong>Run the monte_carlo.py script</strong>
+<p>If you want to run your own analysis in spreadsheets or other tools, just run the "export_tickets.py" to export out the change logs.</p>
 
 <h2>OUTPUT</h2><br />
 <ul>
