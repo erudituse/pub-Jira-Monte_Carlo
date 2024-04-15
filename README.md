@@ -1,5 +1,13 @@
 # pub-Jira-Monte_Carlo
-This is a public repo to export jira tickets using Atlassian API and perform statistical analysis including Monte Carlo simulation to manage schedule and scope risks <br /><br />
+This is a public repo to export jira tickets using Atlassian API and perform statistical analysis including Monte Carlo simulation to manage schedule and scope risks <br />
+These scripts can run on your laptop. I'm assuming you can or already have installed Python on your laptop. You will also need additional libraries:
+<ul><li>Numpy</li>
+<li>pandas</li>
+<li>matlibplot</li>
+<li>scipy</li>
+
+</ul>
+<br />
 
 <strong>Disclaimer</strong>
 <p>
