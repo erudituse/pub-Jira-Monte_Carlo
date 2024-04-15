@@ -1,6 +1,23 @@
 # pub-Jira-Monte_Carlo
-This is a public repo to export jira tickets using Atlassian API and run monte carlo simulation to predict delivery dates <br /><br />
+This is a public repo to export jira tickets using Atlassian API and perform statistical analysis including Monte Carlo simulation to manage schedule and scope risks <br /><br />
 
+<strong>Disclaimer</strong>
+<p>
+This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
+</p>
+<p>
+This software is developed independently, and the views and opinions expressed are those of the author only. The software is not endorsed by any other entity, unless explicitly stated.
+</p>
+<p>
+Users are solely responsible for complying with applicable laws and must evaluate, and bear all risks associated with the use of this software, including any reliance on its functionality, accuracy, and completeness.
+</p>
+<p>
+Contributions to this project are welcome, but they must be made under the same license terms and all contributors must agree to abide by these terms.
+</p>
+<p>
+In future, the software may include contributions from third-party individuals or organizations. All rights and acknowledgments to those contributors are as specified within the project.
+</p>
+<h1>Steps to configure and use the scripts</h2>
 <h2>Step 1:</h2><br />
 Update your Jira credentials<br />
 <ul>
