@@ -82,7 +82,7 @@ Note: Within the jql_query, custom fields might need to be added/edited for your
 
 <h2>Step 4:</h2><br />
 <strong>Run the monte_carlo.py script</strong>
-<p>If you want to run your own analysis in spreadsheets or other tools, just run the "export_tickets.py" to export out the change logs.</p>
+<p>If you want to run your own analysis in spreadsheets or other tools, just run the "export_tickets.py" to export out the change logs.<BR />NB: During the initial run (using a browser or Postman) watch for the order in which change log histories are returned. See the comment on line 384 and adjust code of the for loop accordingly. </p>
 
 <h2>OUTPUT</h2><br />
 <ul>
