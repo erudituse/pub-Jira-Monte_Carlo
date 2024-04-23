@@ -44,10 +44,14 @@ Update the configuration file. "configs.json"<br />
 <li>api_end_point: update this to the API end point. Usually you'll only need to update values before the "?"</li>
 <li>jql_query: this is the JQL query to export jira tickets WITHOUT change logs</li>
 <li>jql_changelog_query: this is the JQL query to export jira tickets WITH change logs</li>
+<li>jql_issue_changelog_query": this query is needed to retrieve all change logs from a ticket if their count is over 100</li>
+<li>jql_issue_api_endpoint: this end point is needed to retrieve all change logs from a ticket if their count is over 100</li>
 <li>project: Name of your Jira Project (usually the project Key)</li>
 <li>Note: concatenate the base_url+api_end_point+project key+jql_query to test the link in a Browser or Postman.<p>
-Note: Within the jql_query, custom fields might need to be added/edited for your install. Adding additional fields or editing existing fields to export, will need a change to the underlying code of export_tickets.py script. Feel free to edit the code as needed to your requirements.
+Note: Within the jql_query, custom fields might need to be added/edited for your install. Adding additional fields or editing existing fields to export, will need a change to the underlying code of export_tickets.py script. Feel free to edit the code as needed to your requirements. 
 </p>
+<p>Note: Jira API are not consistent in the order in which it returns results. At a project level, it returns results in Descending order, which at the Issue level, it returns results in Ascending order. Hence, there's code in the export change logs script that takes care of this quirk. </p>
+<p>Look at the data both API end points return, and adjust the code within "export_change_logs" function by searching for the line that contains "sort_order" </p>
 </li>
 </ul>
 <li>folderPath: this is the location where you intend to store your python files</li>
