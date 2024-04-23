@@ -63,15 +63,65 @@ def fixDate(dateToBeFixed):
 ########################################################################################################
 #####  function to determine the number of changes contained within each Jira ticket ###################
 ########################################################################################################
-def calculateHistorySize(statusHistories):
+def calculateHistorySize(statusHistories, historyLength, issueKey, autho, headers, base_url,jira_ticket_api_query, jira_ticket_api_end_point):
+    #revised logic to be implemented. 
+    #1. need to receive ticket ID and length of the change history 
+    #2. if length of status history is greater than 99, then we need to make another set of API calls to retrieve all change logs for the
     # calculate how many records within history contains updates to the status field
-    stuffSize = len(statusHistories)
     sizeOfStatusRecords = []
+    items_list = []
+    stuffSize = 0
+    if historyLength > 100:
+        statusHistories = getIssueChangelogs(issueKey, historyLength, autho, headers, base_url, jira_ticket_api_end_point, jira_ticket_api_query)
+        sort_order = "ascend"
+    else:
+        sort_order = "desend"
+
+    
+    stuffSize = len(statusHistories)
+
     for a in range(0,stuffSize,1):
-        isStatus = statusHistories[a]["items"][0]["field"]
-        if (isStatus == "status"):
-            sizeOfStatusRecords.append(a)
-    return sizeOfStatusRecords
+        ## find out the number of items within each change ID
+        items_count = len(statusHistories[a]["items"])
+        for b in range(0,items_count,1):
+            isStatus = statusHistories[a]["items"][b]["field"]
+            if (isStatus == "status"):
+                sizeOfStatusRecords.append(a)
+    
+    return sizeOfStatusRecords, statusHistories, sort_order
+
+#################################################################################################################################
+#####  function to make additional API calls to get ticket change logs if there are more than 100 change logs ###################
+#################################################################################################################################
+def getIssueChangelogs(issueKey, historyLength, autho, headers, base_url, jira_ticket_api_end_point, jira_ticket_api_query):
+    # https://ontariodigital.atlassian.net/rest/api/3/search?jql=issue="LAWS-135"&fields=key, status&expand=changelog
+    issue_changelog_startat = 0
+    # divide that by 100 to determine the # of calls to make along with starting position
+    no_of_passes = math.ceil(historyLength/100)
+    loop_counter = 0
+    continue_loop= True
+    issue_changeLogs = []
+
+    while continue_loop:
+        # create the Api call url
+        api_end_point_to_call = base_url+jira_ticket_api_end_point+issueKey+jira_ticket_api_query+str(issue_changelog_startat)
+        # print(api_end_point_to_call)
+        # increment the loop counter
+        loop_counter += 1
+        issue_changelog_startat = issue_changelog_startat + 100
+
+        # make the api calls and append to the dictionary
+        response = requests.get(f"{api_end_point_to_call}", headers=headers, auth=autho)
+        temp = response.json()
+        issue_changeLogs.extend(temp["values"])
+
+        # return the dictionary values to the calculateHistorySize function 
+
+        if loop_counter > no_of_passes-1:
+            continue_loop = False
+    
+    return (issue_changeLogs)
+
 
 ########################################################################################################
 #####  function to determine how many transition changes are recorded within a change ID ###############
@@ -285,44 +335,45 @@ def run_export_tickets():
             ### exit the loop if all the tickets have been exported
             ticketsLoop = False     
 
-def export_change_logs( data, destination, writeMode ):
+def export_change_logs( data, destination, writeMode,autho, headers, base_url,jira_ticket_api_query, jira_ticket_api_end_point):
     
     destinationFile = destination
     appendMode = writeMode
     myData = []
 
-
+    bugCount = 0
     totalRecords = len(data["issues"]) ## total actual Jira tickets exported in the API
     ## append headers to csv file
     if (appendMode == 'w'):
         myData = [["Jira Key","Summary","IssueType","Current Status","Ticket Created On", "From status", "To status", "Date changed","Time in From Status (days)","Release","Components","Labels","Sprint","Date Completed","Epic Link","Age in the last WIP Status","Jira Change ID", "WIP Category","Done Year", "Done Week", "Year Week"]]
     
+    # iterate through every ticket
     for x in range(0,totalRecords,1):
         ## Initialize variables
-        statusList = []
+        historyLength = 0
         componentsList = []
         releaseList = []
         currentSprint = []
         listOfStatusRecords = []
         WIPageinCurrentStatus = 0
-        lastRecordValue = 0                                                     ### reset the last record value variable for every Jira ticket
         done_year = 0
         done_week = 0
         year_week = 0
         
         ## for every ticket get info
-        ## get all ticket history into a list
-        statHistories = data["issues"][x]["changelog"]["histories"]
-        ## calculate the lengh of the history list
-        historyLength = len(data["issues"][x]["changelog"]["histories"])
-        ## find out the current status of the Jira ticket
-        currentStatus = data["issues"][x]["fields"]["status"]["name"]
-        ## capture the issue type (epic, story, task, subtask)
-        issueType = data["issues"][x]["fields"]["issuetype"]["name"]
         ## capture the issue key
         issueKey = data["issues"][x]["key"]
         ## capture the issue summary
         issueSummary = data["issues"][x]["fields"]["summary"]
+        ## get all ticket history into a list
+        statHistories = data["issues"][x]["changelog"]["histories"]
+        ## calculate the lengh of the history list
+        downloadedHistoryLength = len(data["issues"][x]["changelog"]["histories"])
+        historyLength = data["issues"][x]["changelog"]["total"]
+        ## find out the current status of the Jira ticket
+        currentStatus = data["issues"][x]["fields"]["status"]["name"]
+        ## capture the issue type (epic, story, task, subtask)
+        issueType = data["issues"][x]["fields"]["issuetype"]["name"]
         ## get the issue created date
         dateCreated = data["issues"][x]["fields"]["created"]
         ## fix the format of the date to eastern time
@@ -339,115 +390,128 @@ def export_change_logs( data, destination, writeMode ):
             wipCategory = "Prioritized"
         else:
             wipCategory = "WIP"
-            
+        
+        ## find Epic link (Atlassian cloud changed epic link to parent)
         try:
-            epicLink = data["issues"][x]["fields"]["parent"]["fields"]["summary"]                 ## find Epic link (Atlassian cloud changed epic link to parent)
+            epicLink = data["issues"][x]["fields"]["parent"]["fields"]["summary"]
         except AttributeError:
             epicLink = ""
         except KeyError:
             epicLink = ""
 
-        
+        ## fix the format of the resolution date
         if (doneDate != None):
-            doneDate = fixDate(doneDate)                                        ## fix the format of the resolution date
+            doneDate = fixDate(doneDate)                                        
             done_year, done_week, _ = doneDate.isocalendar()
             done_week = f"{done_week:02}"
-            year_week = str(done_year)+'-'+str(done_week)                                 ## create a column and store the completed data as 2024_-01 format
+            ## create a column and store the completed data as 2024-01 format
+            year_week = str(done_year)+'-'+str(done_week)                                 
 
-        labels = data["issues"][x]["fields"]["labels"]                          ## capture the labels attached to the ticket
+         ## capture the labels attached to the ticket
+        labels = data["issues"][x]["fields"]["labels"]                         
         
-
-        releaseLength = len(data["issues"][x]["fields"]["fixVersions"])        ## find out how many components are added to each Jira ticket
-        for fixver in range(0,releaseLength,1):                                 ## get all components
+        ## find out how many releases are added to each Jira ticket
+        releaseLength = len(data["issues"][x]["fields"]["fixVersions"])
+         ## get all releases
+        for fixver in range(0,releaseLength,1):                                
             releaseList.append(data["issues"][x]["fields"]["fixVersions"][fixver]["name"])
 
-  
-        componentLength = len(data["issues"][x]["fields"]["components"])        ## find out how many components are added to each Jira ticket
-        for comp in range(0,componentLength,1):                                 ## get all components
+        ## find out how many components are added to each Jira ticket
+        componentLength = len(data["issues"][x]["fields"]["components"])
+        ## get all components
+        for comp in range(0,componentLength,1):                                 
             componentsList.append(data["issues"][x]["fields"]["components"][comp]["name"])
         
 
-        listOfStatusRecords = calculateHistorySize(statHistories)               ## from the history list, find out which ones contain Workflow transition status
-        lengthOfRecord = len(listOfStatusRecords)                               ## get the length of the list that contain the transition status locations
-
-        if lengthOfRecord > 0:                                                  ## since indexes start at 0
-            lastRecordValue = listOfStatusRecords[lengthOfRecord-1]             ## store the location of the last status record
+        ## from the history list, find out which ones contain Workflow transition status
+        ## ticketChangeLog is the revised list of change histories for tickets with more than 100 change records
+        status_history_exists = True
+        listOfStatusRecords, ticketChangeLog, sort_order = calculateHistorySize(statHistories, historyLength, issueKey,autho, headers, base_url,jira_ticket_api_query, jira_ticket_api_end_point)
+        ## get the length of the list that contain the transition status locations
         
-        if (historyLength == 0):                                                ## capture items in the backlog without any change history
+        lengthOfRecord = len(listOfStatusRecords)
+        if lengthOfRecord == 0:
+            status_history_exists = False
+            ## capture items in the backlog without any change history
             fromStatus = data["issues"][x]["fields"]["status"]["name"]
             WIPageinCurrentStatus = calculateWIP(dateCreated)
             changeID = 0
             ## print ("issue key when history length = 0", issueKey, " and x is ",x)    
             myData.append([issueKey,issueSummary, issueType, currentStatus, dateCreated,fromStatus,None,None,None,releaseList,componentsList,labels,currentSprint,None,epicLink,WIPageinCurrentStatus,changeID, wipCategory, done_year, done_week,year_week])
-        
-        ## iterate through history of every Jira story - variable "z"; if changes in ascending order, increment the loop, else decrement the loop
-        for z in range(historyLength-1,-1,-1):                                  
-            ## initialize variables for every change record in the history
-            WIPageinCurrentStatus = 0
-            statusPositions = []
-            locationOfStatus = 0
-            lengthOfResolutionChangeID = 0
+
+        while status_history_exists:
+            # what is the sort order of the change log history
+            # if there are less than 100 records in the change log, it's part of the original data pull ..
+            # ...and the order when using that API is descending
+            # otherwise the order is ascending when using the ISSUE end point
+            if sort_order =="desend":
+                for_loop_param_a = lengthOfRecord -1
+                for_loop_param_b = -1
+                for_loop_param_c = -1
+            elif sort_order == "ascend":
+                for_loop_param_a = 0
+                for_loop_param_b = lengthOfRecord
+                for_loop_param_c = 1
             
-            ## find out how many changes are within a change ID and if there are more than one ...
-            ## ... find out where within the change ID does the item = status reside in
-            ## (hopefully there are no change records with multiple transition changes within the same changeID)
-            lengthOfResolutionChangeID = len(data["issues"][x]["changelog"]["histories"][z]["items"])
-            if lengthOfResolutionChangeID >= 1:
-                statusPositions = determineStatuswithinItems(data["issues"][x]["changelog"]["histories"][z]["items"])
-                statusExists = statusPositions[1]
-                if statusExists == 0:
-                    locationOfStatus = 0
-                else:
-                    locationOfStatus = statusPositions[0]
-                    locationOfStatus = locationOfStatus[0]
-            else:
-                locationOfStatus = 0
+            # Now to find the indexes with the change records and calculate time in the From state
+            ######################## Apr 22 Update ################################ 
+            ##### update on the logic to calculate time in each state 
+            # go through each change ID
+            # if "z"" matches listOfStatusRecords value
+            # for the first hit, subtract date - created date
+            # store previous date somewhere
+            # for subsequent hits subtract the created date - store previous date somewhere
 
-            statusHist = data["issues"][x]["changelog"]["histories"][z]["items"][locationOfStatus]["field"]         ## get the list of the status change from the identified changeID
-            changeID = data["issues"][x]["changelog"]["histories"][z]["id"]                                         ## log the Jira change ID for future troubleshooting and include it into the CSV
-            
-            if (statusHist == "status" or statusHist == "resolution"):                                               ## (legacy code) only grab the data for status change and discard the rest
-                statusList.append(z)                                                                                ## determine which record in the change history releates to "Status" and remember it
-                fromStatus = data["issues"][x]["changelog"]["histories"][z]["items"][locationOfStatus]["fromString"]     ## get the from Status
+            # iterate through the listOfStatusRecords - it contains the index of the status changes
+            for z in range(for_loop_param_a,for_loop_param_b,for_loop_param_c):
+                # starting position of the index counter
+                value_of_index = listOfStatusRecords[z]
 
-                if (fromStatus == None):
-                    fromStatus = data["issues"][x]["changelog"]["histories"][z]["items"][0]["fromString"]               ## get the from status
-                if (lengthOfResolutionChangeID > 1):
-                    toStatus = data["issues"][x]["changelog"]["histories"][z]["items"][locationOfStatus]["toString"]    ## get the to status
-                else:
-                    toStatus = data["issues"][x]["changelog"]["histories"][z]["items"][locationOfStatus]["toString"]    ## get the to status
-
-                statusChangeDate = data["issues"][x]["changelog"]["histories"][z]["created"]                            ## get the status change date
-                statusChangeDate = fixDate(statusChangeDate)                                                            ## fix the format of the date
-
-                ## calculate the time in status
-                if (z==lastRecordValue):                        ## if change records are stored in asecending order, z==0
-                    timeInStatus = statusChangeDate - dateCreated                                                       
-                else:
-                    ## to identify the precise location of the previous status record in the changelog history
-                    listLength = len(statusList)-2
-                    prevStatDate = data["issues"][x]["changelog"]["histories"][statusList[listLength]]["created"]
-                    prevStatDate = fixDate(prevStatDate)
-                    timeInStatus =  statusChangeDate - prevStatDate
+                changeID = ticketChangeLog[value_of_index]["id"]
+                transitionDate = ticketChangeLog[value_of_index]["created"]
+                transitionDate = fixDate(transitionDate)
+                # find out how many items are within one change ID
+                len_of_last_item = len(ticketChangeLog[value_of_index]["items"])
                 
-                if (currentStatus != "Done"):
-                    ## if a ticket is not closed, get the aging days in its current status    
-                    changeDateOfLastStatus = data["issues"][x]["changelog"]["histories"][lastRecordValue]["created"]
-                    changeDateOfLastStatus = fixDate(changeDateOfLastStatus)
-                    WIPageinCurrentStatus = calculateWIP(changeDateOfLastStatus)
-                    
-                timeInStatus = math.ceil(timeInStatus.total_seconds()/86400)   # convert time to days
-                if (timeInStatus < 0.0001):
-                    timeInStatus = 0
+                # for the last status update record
+                if (sort_order == "desend" and z == 0) or (sort_order == "ascend" and z == lengthOfRecord -1):
+                    status_history_exists = False
+                    fromStatus = ticketChangeLog[value_of_index]["items"][len_of_last_item-1]["fromString"]
+                    toStatus = ticketChangeLog[value_of_index]["items"][len_of_last_item-1]["toString"]
+                    if (currentStatus != "Done"):
+                        WIPageinCurrentStatus = calculateWIP(transitionDate)
+                else:
+                    fromStatus = ticketChangeLog[value_of_index]["items"][len_of_last_item-1]["fromString"]
+                    toStatus = ticketChangeLog[value_of_index]["items"][len_of_last_item-1]["toString"]
 
-                ## append to csv file
-                ## print ("ChangeID=",changeID,"---",issueKey,"---",statusPositions,"From Status: ", fromStatus, "---To Status:",toStatus)    ## for troubleshooting
-                myData.append([issueKey,issueSummary, issueType, currentStatus, dateCreated,fromStatus,toStatus,statusChangeDate,timeInStatus,releaseList,componentsList,labels,currentSprint,doneDate,epicLink,WIPageinCurrentStatus,changeID,wipCategory, done_year, done_week, year_week])
+                # if this is the first change record, then time in status = transition date - date created
+                if z == for_loop_param_a:
+                    timeInStatus = transitionDate - dateCreated
+                else:
+                    # getting the transition date of the previous record depends on the order in which records are pulled
+                    if sort_order == "desend":
+                        previous_value_of_index = listOfStatusRecords[z+1]
+                    elif sort_order == "ascend":
+                        previous_value_of_index = listOfStatusRecords[z-1]
+                    previous_transition_date = ticketChangeLog[previous_value_of_index]["created"]
+                    previous_transition_date = fixDate(previous_transition_date)
+                    timeInStatus = transitionDate - previous_transition_date
+                # convert time to days
+                timeInStatus = round(timeInStatus.total_seconds()/86400,2)
+                if timeInStatus < 0.001:
+                    timeInStatus = 0.25
+                
 
+                #append the row to the csv file
+                myData.append([issueKey,issueSummary, issueType, currentStatus, dateCreated,fromStatus,toStatus,transitionDate,timeInStatus,releaseList,componentsList,labels,currentSprint,doneDate,epicLink,WIPageinCurrentStatus,changeID,wipCategory, done_year, done_week, year_week])
+                
+
+
+            ######################## Apr 22 Update ################################
+            
     ## open the CSV file
     csvFile = open(destinationFile, appendMode, encoding='utf-8', newline='')
     ## overwrite the data in the CSV file
-    
     with csvFile:
         writer = csv.writer(csvFile)
         writer.writerows(myData)
@@ -467,6 +531,10 @@ def run_export_changelogs():
 
     path_for_secrets = readConfigs['configData'][0]['folderForCreds']
     fileName_for_secrets = readConfigs['configData'][0]['credsFile']
+
+    ### get the api end point parameters if we need to make change log calls for issues whose change logs exceed 100 (max returned results)
+    jira_ticket_api_end_point = readConfigs["configData"][0]["jql_issue_api_endpoint"]
+    jira_ticket_api_query = readConfigs["configData"][0]["jql_issue_changelog_query"]
 
     ### create the URL of the REST API endpoint you want to access
     ### don't delete or modify the following two lines (unless Atlassian publishes a new end point/version)
@@ -529,7 +597,7 @@ def run_export_changelogs():
         print("Changelogs in json = ",totalRecords, "starting at ticket ",firstIssueKey, "and last ticket ",lastIssuekey)
     
         ## call the export to CSV function form the json
-        export_change_logs(data,destination,writeMode)
+        export_change_logs(data,destination,writeMode,autho, headers, base_url, jira_ticket_api_query, jira_ticket_api_end_point)
 
         ### check if all tickets have been exported. 
         if passNumber < numberOfPasses - 1:
@@ -555,5 +623,5 @@ def run_export_changelogs():
 
 print(f'Exporting all Jira tickets without Change Logs.........................')
 run_export_tickets()
-print(f'\nExporting all Change Logs .........................')
+print(f'\nExporting all Change Logs .........................\n Might take a bit longer depending on history size for each ticket...')
 run_export_changelogs()
