@@ -233,13 +233,13 @@ if completed_tickets_count >= 10:
     # plot the distribution of actual cycle times
     xlabel = 'Ticket completion in Days'
     ylabel = 'Frequency'
-    graphTitle = 'Distribution of Cycle Time for Done and Aging for WIP tickets'
+    graphTitle = 'Flow Metric 1 - Cycle Time Distribution'
     plot_cycle_time_distribution(cycle_time_history,imagesPath+'history_distribution.png',xlabel, ylabel,graphTitle)
 
     # plot actual weekly completion ticket count as a line graph (only Done tickets used)
     xlabel = 'Year Week'
     ylabel = 'Count of tickets'
-    graphTitle = 'Weekly ticket completion rate'
+    graphTitle = 'Flow Metric 2 - Weekly Throughput'
     plot_line_graph(weekly_throughput,imagesPath+'weeklyThroughput.png',xlabel,ylabel,graphTitle)
 
     # run Monte carlo on the takt time
@@ -248,7 +248,7 @@ if completed_tickets_count >= 10:
         np.savetxt('csv/debug-WeeksToComplete.csv',weeks_to_complete, delimiter=',', fmt='%f')
         xlabel = 'Weeks'
         ylabel = '# of Simulations'
-        graphTitle = 'Distribution of the simulated completion times (weeks)'
+        graphTitle = 'Forecaseted distribution of the simulated completion times (weeks)'
         plot_cycle_time_distribution(weeks_to_complete,imagesPath+'weeksToComplete.png',xlabel, ylabel, graphTitle)
 
         outer_bound_days_to_complete = np.percentile(weeks_to_complete,confidence) * 5
