@@ -1,13 +1,21 @@
 # pub-Jira-Monte_Carlo
-This is a public repo to export jira tickets using Atlassian API and perform statistical analysis including Monte Carlo simulation to manage schedule and scope risks <br />
-These scripts can run on your laptop. I'm assuming you can or already have installed Python on your laptop. You will also need additional libraries:
+<p>This is a public repo to export jira tickets using Atlassian API and perform statistical analysis including Monte Carlo simulation to manage schedule and scope risks. The purpose of this set of scripts is so that anyone with basic knowledge of Python can configure the items needed to access the Change Logs needed for any kind of Flow Metrics. Atlassian doesn't make it easy to get these Change Logs nor do they make it easy to customize existing reports. Even documentation and explanation of existing reports are scarce.</p>
+<p>
+These scripts can run on your laptop. You will need Python (hopefully you have the latest version) on your laptop. You will also need these additional libraries:
 <ul><li>Numpy</li>
 <li>pandas</li>
 <li>matlibplot</li>
 <li>scipy</li>
-
+<li>If you get errors when running the script, let that guide you for get additional libraries for your specific installation of Python</li>
 </ul>
-<br />
+</p>
+<p>
+It's likely that these scripts won't work right off the bat. For your instance of Jira install, use these API end point examples to understand the response returned. I've run these export scripts with only minor modifications across many enterprises, and so I'm hoping your configuration effort will be minimal, and refactoring effort will be zero.<br>
+<ul>
+<li>Endpoint example to access all change logs for a project: https://YOURINSTANCE.atlassian.net/rest/api/3/search?jql=project+%3D+[ProjectKEY]&fields=key,summary, created, issuetype, status, parent, labels, fixVersions,components,customfield_10007,resolutiondate&sorter/order=ASC&type=story&maxResults=1000&expand=changelog&startAt=</li>
+<li>Endpoint example to access all changelogs which require pagination for one issue:https://YOURINSTANCE.atlassian.net//rest/api/3/issue/ISSUE-NUMBER/changelog?maxResults=100&startAt=</li>
+</ul>
+</p>
 
 <strong>Disclaimer</strong>
 <p>
