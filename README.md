@@ -1,5 +1,5 @@
 # pub-Jira-Monte_Carlo
-<p>This is a public repo to export jira tickets using Atlassian API and perform statistical analysis including Monte Carlo simulation to manage schedule and scope risks. The purpose of this set of scripts is so that anyone with basic knowledge of Python can configure the items needed to access the Change Logs needed for any kind of Flow Metrics. Atlassian doesn't make it easy to get these Change Logs nor do they make it easy to customize existing reports. Even documentation and explanation of existing reports are scarce.</p>
+<p>This is a public repo to export Atlassian Jira tickets using the API and perform statistical analysis including Monte Carlo simulation to manage schedule and scope risks. The purpose of this set of scripts is so that anyone with basic knowledge of Python can configure the items needed to access the Change Logs needed for any kind of Agile Flow Metrics. Atlassian doesn't make it easy to get these Jira Change Logs nor do they make it easy to customize existing Jira reports. Even documentation and explanation of existing Jira reports are scarce.</p>
 <p>
 These scripts can run on your laptop. You will need Python (hopefully you have the latest version) on your laptop. You will also need these additional libraries:
 <ul><li>Numpy</li>
@@ -12,14 +12,14 @@ These scripts can run on your laptop. You will need Python (hopefully you have t
 <p>
 It's likely that these scripts won't work right off the bat. For your instance of Jira install, use these API end point examples to understand the response returned. I've run these export scripts with only minor modifications across many enterprises, and so I'm hoping your configuration effort will be minimal, and refactoring effort will be zero.<br>
 <ul>
-<li>Endpoint example to access all change logs for a project: https://YOURINSTANCE.atlassian.net/rest/api/3/search?jql=project+%3D+[ProjectKEY]&fields=key,summary, created, issuetype, status, parent, labels, fixVersions,components,customfield_10007,resolutiondate&sorter/order=ASC&type=story&maxResults=1000&expand=changelog&startAt=</li>
+<li>Atlassian Jira Endpoint example to access all change logs for a project: https://YOURINSTANCE.atlassian.net/rest/api/3/search?jql=project+%3D+[ProjectKEY]&fields=key,summary, created, issuetype, status, parent, labels, fixVersions,components,customfield_10007,resolutiondate&sorter/order=ASC&type=story&maxResults=1000&expand=changelog&startAt=</li>
 <li>Endpoint example to access all changelogs which require pagination for one issue:https://YOURINSTANCE.atlassian.net//rest/api/3/issue/ISSUE-NUMBER/changelog?maxResults=100&startAt=</li>
 </ul>
 </p>
 
 <strong>Disclaimer</strong>
 <p>
-This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
+This software to access Jira change logs via the Atlassian API is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
 </p>
 <p>
 This software is developed independently, and the views and opinions expressed are those of the author only. The software is not endorsed by any other entity, unless explicitly stated.
@@ -35,7 +35,7 @@ In future, the software may include contributions from third-party individuals o
 </p>
 <h1>Steps to configure and use the scripts</h2>
 <h2>Step 1:</h2><br />
-Update your Jira credentials<br />
+Update your Atlassian Jira credentials<br />
 <ul>
 <li>CAUTION: Ensure the creds folder and user credentials file doesn't get uploaded to Github. Update the .gitignore file</li>
 <li>Edit the "secrets.json" file in the creds folder</li>
@@ -94,11 +94,11 @@ Note: Within the jql_query, custom fields might need to be added/edited for your
 
 <h2>Step 4:</h2><br />
 <strong>Run the monte_carlo.py script</strong>
-<p>If you want to run your own analysis in spreadsheets or other tools, just run the "export_tickets.py" to export out the change logs.<BR />NB: During the initial run (using a browser or Postman) watch for the order in which change log histories are returned. See the comment on line 384 and adjust code of the for loop accordingly. </p>
+<p>If you want to run your own monte carlo or any other analysis using spreadsheets or other tools, just run the "export_tickets.py" to export out the change logs.<BR />NB: During the initial run (using a browser or Postman) watch for the order in which change log histories are returned. See the comment on line 384 and adjust code of the for loop accordingly. </p>
 
 <h2>OUTPUT</h2><br />
 <ul>
-<li>The script will create an output like this:
+<li>The monte carlo script will create an output like this:
 <p>
 The following emperical data for the [Release] is used to forecast release dates: 
 <ul>
@@ -111,7 +111,7 @@ The following emperical data for the [Release] is used to forecast release dates
 <li>between min 1.0 day/s and max 100 day/s</li>
 <li>with a rolling 8 week average completion rate of 10 tickets/week </li>
 </ul>
-Forecast: There's a 85% chance that the remaining YY (+10% additional tickets to account for unknown unknowns) Stories, Bugs, Tasks and Cloud Engineering tickets is expected to be delivered between 18 July, 2024 and 25 July, 2024.
+Forecast from Monte Carlo Analysis  : There's a 85% chance that the remaining YY (+10% additional tickets to account for unknown unknowns) Stories, Bugs, Tasks and Cloud Engineering tickets is expected to be delivered between 18 July, 2024 and 25 July, 2024.
 </p>
 <li>There are two key csv files that will be created when the jira export script is run. These two files store the exported data from Jira needed to run the statistical analysis</li>
 <ul>

@@ -185,20 +185,23 @@ def plot_created_date_graph(df, release):
     # Convert 'Week' back to the original format for display purposes
     summary_df['Week'] = summary_df['Week'].dt.strftime('%Y-%W')
 
+    if (len(summary_df) != 0):
     # print(summary_df)
 
-    summary_df.set_index('Week', inplace=True)
-    summary_df.plot(kind='bar', figsize=(12, 6), width=0.8)
+        summary_df.set_index('Week', inplace=True)
+        summary_df.plot(kind='bar', figsize=(12, 6), width=0.8)
 
-    plt.title(str(datetime.today().strftime('%Y-%m-%d'))+'\nTickets Created vs. Completed by Week')
-    plt.xlabel('Week')
-    plt.ylabel('Number of Tickets')
-    plt.xticks(rotation=45)
-    plt.legend()
-    plt.tight_layout()
+        plt.title(str(datetime.today().strftime('%Y-%m-%d'))+'\nTickets Created vs. Completed by Week')
+        plt.xlabel('Week')
+        plt.ylabel('Number of Tickets')
+        plt.xticks(rotation=45)
+        plt.legend()
+        plt.tight_layout()
     
-    plt.savefig(imagesPath)
-    plt.clf()
+        plt.savefig(imagesPath)
+        plt.clf()
+    else:
+        print(f'Not enough data to plot the "created date graph"')
 
     return
 
