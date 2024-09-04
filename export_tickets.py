@@ -1,6 +1,8 @@
 ######### Author: Charan Atreya
 ####### 
-# Purpose: The pupose of this script is to export tickets from Jira including change log for each ticket. 
+# Purpose: The pupose of this script is to export tickets from Jira. Two files are created
+# 1. Change logs (needed to calculate cycle time & cycle time distributions)
+# 2. List of tickets without change logs  (needed to calculate throughput)
 #######
 
 ########################################################################################################
@@ -149,7 +151,7 @@ def calculateWIP(dateOfChange):
 
 
 ########################################################################################################
-#####  function to determine status transition of each ticket and record them in a csv file ############
+#####  Step 1a: NO CHANGE-LOGS - run_export_tickets calls this function to do the work of exporting only tickets ############
 ########################################################################################################
 def export_tickets( data, destination, writeMode, csvHeaders):
     
@@ -184,6 +186,12 @@ def export_tickets( data, destination, writeMode, csvHeaders):
         dateCreated = data["issues"][x]["fields"]["created"]                    ## get the issue created date
         labels = data["issues"][x]["fields"]["labels"]                          ## capture the labels attached to the ticket
         doneDate = data["issues"][x]["fields"]["resolutiondate"]                ## find out the resolution date
+        issueDescription = data["issues"][x]["fields"]["description"]           ## capture the issue description
+
+        # Example usage
+        # jira_description = '{"version": 1, "type": "doc", "content": [{"type": "paragraph", "content": [{"type": "text", "text": "Links to Laws-1365"}]}]}'
+        cleaned_description = strip_json(issueDescription)
+        # print(cleaned_description)
 
         ## fix the format of the date to eastern time
         dateCreated = fixDate(dateCreated)
@@ -233,7 +241,7 @@ def export_tickets( data, destination, writeMode, csvHeaders):
         ## append to csv file
         ## print ("ChangeID=",changeID,"---",issueKey,"---",statusPositions,"From Status: ", fromStatus, "---To Status:",toStatus)    ## for troubleshooting
         myData.append([issueKey,issueSummary, issueType, currentStatus, dateCreated,releaseList,componentsList,
-                       labels,currentSprint,doneDate,epicLink,wipCategory, done_year, done_week, done_year_week,
+                       labels,currentSprint,doneDate,epicLink, cleaned_description, wipCategory, done_year, done_week, done_year_week,
                        created_year, created_week, created_year_week])
 
     ## open the CSV file
@@ -246,6 +254,9 @@ def export_tickets( data, destination, writeMode, csvHeaders):
 
     return
 
+#######################################################################################################
+#####  Step 1: function to determine status transition of each ticket and record them in a csv file ############
+########################################################################################################
 def run_export_tickets():
     ### number of results for API calls your Jira install is configured to return
     maxResultsForAPICalls = 100
@@ -345,7 +356,7 @@ def export_change_logs( data, destination, writeMode,autho, headers, base_url,ji
     totalRecords = len(data["issues"]) ## total actual Jira tickets exported in the API
     ## append headers to csv file
     if (appendMode == 'w'):
-        myData = [["Jira Key","Summary","IssueType","Current Status","Ticket Created On", "From status", "To status", "Date changed","Time in From Status (days)","Release","Components","Labels","Sprint","Date Completed","Epic Link","Age in the last WIP Status","Jira Change ID", "WIP Category","Done Year", "Done Week", "Year Week"]]
+        myData = [["Jira Key","Summary","IssueType","Current Status","Ticket Created On", "From status", "To status", "Date changed","Time in From Status (days)","Release","Components","Labels","Sprint","Date Completed","Epic Link","Age in the last WIP Status","Jira Change ID", "WIP Category","Done Year", "Done Week", "Done Year Week"]]
     
     # iterate through every ticket
     for x in range(0,totalRecords,1):
@@ -380,11 +391,11 @@ def export_change_logs( data, destination, writeMode,autho, headers, base_url,ji
         dateCreated = fixDate(dateCreated)
         ## find out the resolution date
         doneDate = data["issues"][x]["fields"]["resolutiondate"]
-        if (currentStatus == 'Done'):
+        if (currentStatus == 'Done' or currentStatus == "Ready for Prod" or currentStatus == "PROD Deployed" or currentStatus == "PROD On Hold"):
             wipCategory = 'Done'
         elif (currentStatus == 'Cancelled'):
             wipCategory = 'Cancelled'
-        elif (currentStatus == 'Backlog'):
+        elif (currentStatus == 'Backlog' or currentStatus == "PO Review"):
             wipCategory = 'Backlog'
         elif (currentStatus == "To Do"):
             wipCategory = "Prioritized"
@@ -610,6 +621,39 @@ def run_export_changelogs():
 
     return
 
+#######################################################################################################
+#####  function to clean up json content from DESCRIPTION                                   ############
+########################################################################################################
+
+def extract_text_only(data):
+    text_content = ""
+
+    if isinstance(data, dict):
+        if "text" in data:
+            text_content += data["text"] + "\n"
+        for key, value in data.items():
+            if key != "text":
+                text_content += extract_text_only(value)
+    elif isinstance(data, list):
+        for item in data:
+            text_content += extract_text_only(item)
+
+    return text_content
+
+def strip_json(jira_description):
+    """
+    Strips JSON keys from a JIRA field description and retains text values.
+
+    Parameters:
+    jira_description (dict): The JIRA field description containing JSON tags.
+
+    Returns:
+    str: The cleaned description with JSON keys removed.
+    """
+    # Extract text values from the dictionary
+    cleaned_description = extract_text_only(jira_description)
+
+    return cleaned_description.strip()
 
 
 
