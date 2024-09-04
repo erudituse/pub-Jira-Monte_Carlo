@@ -96,7 +96,7 @@ def calculateHistorySize(statusHistories, historyLength, issueKey, autho, header
 #####  function to make additional API calls to get ticket change logs if there are more than 100 change logs ###################
 #################################################################################################################################
 def getIssueChangelogs(issueKey, historyLength, autho, headers, base_url, jira_ticket_api_end_point, jira_ticket_api_query):
-    # https://ontariodigital.atlassian.net/rest/api/3/search?jql=issue="LAWS-135"&fields=key, status&expand=changelog
+
     issue_changelog_startat = 0
     # divide that by 100 to determine the # of calls to make along with starting position
     no_of_passes = math.ceil(historyLength/100)
